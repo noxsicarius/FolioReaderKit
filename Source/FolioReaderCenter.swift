@@ -739,8 +739,20 @@ open class FolioReaderCenter: UIViewController, UICollectionViewDelegate, UIColl
             return
         }
 
-        UIView.animate(withDuration: animated ? 0.3 : 0, delay: 0, options: UIViewAnimationOptions(), animations: { () -> Void in
-            self.collectionView.scrollToItem(at: indexPath, at: .direction(withConfiguration: self.readerConfig), animated: false)
+        UIView.animate(withDuration: animated ? 0.3 : 0, delay: 0, options: UIViewAnimationOptions(), animations: {
+            var animation = CATransition()
+            animation.delegate = self
+            animation.duration = 1.2
+            animation.startProgress = 0.0
+            animation.endProgress = 1.0
+            animation.timingFunction = UIViewAnimationCurve
+            animation.type = "pageCurl"
+            animation.subtype = "fromRight"
+            animation.isRemovedOnCompletion = false
+            animation.fillMode = "extended"
+            self.collectionView.layer.add(animation, forKey: "pageFlipAnimation")
+            self.collectionView.addSubview(
+            self.collectionView.scrollToItem(at: indexPath, at: .direction(withConfiguration: self.readerConfig), animated: false))
         }) { (finished: Bool) -> Void in
             completion?()
         }
